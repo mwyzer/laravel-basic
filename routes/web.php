@@ -1,9 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Demo\DemoController;
-use App\Http\Controllers\About\AboutController;
-use App\Http\Controllers\Contact\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/about', [AboutController::class, 'Index']);
-// Route::get('/about', function () {
-//     // echo "this is about page";
-//     return view('about');
-// });
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::get('/contact', [ContactController::class, 'Index']);
-// Route::get('/contact', function () {
-//     // echo "this is contact page";
-//     return view('contact');
-// });
-
-Route::controller(DemoController::class)->group(function () {
-// Route::get('/contact', [ContactController::class, 'Index']);
-Route::get('/contact', 'ContactMethod')->name('contact.page');
-Route::get('/about', [AboutController::class, 'Index'])->name('about.page')->middleware('check');
-// Route::get('/about', 'Index')->name('about.page');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+require __DIR__.'/auth.php';
